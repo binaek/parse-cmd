@@ -14,9 +14,3 @@ A quick search on Google has several entries; the top results include the follow
   * [http://commons.apache.org/cli/ Apache Commons] The Apache Commons CLI library provides an API for processing command line interfaces. 
   * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog entry describes well the state of command-line software for java and list 13-products found when started a search much as I did.
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
