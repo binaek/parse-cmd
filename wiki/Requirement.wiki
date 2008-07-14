@@ -1,0 +1,22 @@
+#summary requirement for yet another command-line parser for Java
+
+= Requirement =
+There are several, hundreds and possibly more, command line parser programs for Java.
+
+A quick search on Google has several entries; the top results include the following products.
+
+  * [http://www.cs.ubc.ca/~lloyd/java/argparser.html argparser] It is the first to appear in the list of results from Google to the search: 'cli parser java'
+  * [http://jargs.sourceforge.net JArgs] Last updated 2005.April.12
+  * [http://journals.ecs.soton.ac.uk/java/tutorial/java/cmdLineArgs/parsing.html parseCmdLine] Java tutorial available at a UK Java site.
+  * [http://www.martiansoftware.com/jsap/ JSAP] Java Simple Argument Parser.
+  * [http://jopt-simple.sourceforge.net/ JOpt Simple] JOpt Simple is a Java library for parsing command line options, such as those you might pass to an invocation of javac. 
+  * [http://code.google.com/p/cli-parser/ cli-parser] This entry shows as the only result when searching for 'cli java' in Google Code.
+  * [http://commons.apache.org/cli/ Apache Commons] The Apache Commons CLI library provides an API for processing command line interfaces. 
+  * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog entry describes well the state of command-line software for java and list 13-products found when started a search much as I did.
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
