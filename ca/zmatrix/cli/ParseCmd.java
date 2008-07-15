@@ -334,12 +334,19 @@ public class ParseCmd {
     }
 
     /**
-     * main is included to facilitate testing and to show usage of the
-     * class to parse commands for a console application
+     * main is included to show usage of the class to parse commands
+     * for a console application.
      *
-     * @param args input args for test
+     * Three steps are required to use the ParseCmd
+     *
+     *      1. Define       new ParseCmd.Builder(.help("usage .").parm()...
+     *      2. Validate     String err = cmd.validate(args);
+     *      3. Parse        if(err.isEmpty() R = cmd.parse(args);
+     *
+     * @param args input args from command line
      */
     public static void main(String[] args) {
+
         ParseCmd cmd = new ParseCmd.Builder()
                   .help(usage)
                   .parm("-loop",  "10" ).req("1")
@@ -350,11 +357,14 @@ public class ParseCmd {
                   .parm("-tt",    "0")
                   .parm("-of",    "readme.txt")
                   .build();
+
         System.out.println(cmd.displayParms());
         String err = cmd.validate(args);
-        Map<String,String> R = cmd.parse(args);
-        if( err.isEmpty()) System.out.println(cmd.displayMap(R));
-        System.out.println(err);
-
+        Map<String,String> R;
+        if( err.isEmpty()) {
+            R = cmd.parse(args);
+            System.out.println(cmd.displayMap(R));
+        }
+        else System.out.println(err);
     }
 }
