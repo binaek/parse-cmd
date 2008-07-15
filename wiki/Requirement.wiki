@@ -15,10 +15,10 @@ A quick search on Google has several entries; the top results include the follow
   * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog entry describes well the state of command-line software for java and list 13-products found when started a search much as I did.
 
 Reviewing these and other entries, it was time to give a try to yet another parser. The requirements listed are as follows:
-  # *Definition. The tool should allow a simple definition of each parameter entry and includes the following attributes:
+  # *Definition.* The tool should allow a simple definition of each parameter entry and includes the following attributes:
     * Name. A primary name and alias which uniquely identifies the entry.
     * Value. Default value. 
     * Validation expression. Regular-expressions, regex, are identified as an appropriate solution to allow definition of various types, such as integer, date, time, etc., but without getting into Java types, use instead Strings + Regular Expressions.
     * Help message. Define a message string to describe the purpose and format of a parameter.
     * Required indicator. Ability to indicate that a parameter is required; default is optional.
-  # Parsing. A validate process followed by a parse process producing a Map containg the resultant merged values for use by the caller. 
+  # *Parsing.* A validate process followed by a parse process producing a Map containing the resultant merged values for use by the caller. 
