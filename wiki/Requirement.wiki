@@ -25,8 +25,8 @@ Reviewing these and other entries, it was time to give a try to yet another pars
   # *Parsing.* A validate process followed by a parse process producing a Map containing the resultant merged values for use by the caller. 
 
 The overall property, possibly at the expense of function, is to keep the solution simple.  Other properties include the following:
-  * *Avoid use of Exceptions* A simple String response, empty if all is fine and containing any error messages. Typically but not always, the usage is for a interactive use by an end-user. Hence, a String suitable for viewing is desirable over exceptions. Therefore, a validate(args) method, returning and empty String or error message is selected as the vehicle to respond to the caller.
-  * *Result* A Map containing merged values, the parsed values plus defaults values, is identified as the result object for the parse process. Three steps are apparent:
+  * *Avoid use of Exceptions* A simple String response, empty if all is fine or containing a set of error messages. Typically but not always, the parse process is for an interactive use, e.g an end-user rather than an automated process. Hence, a String suitable for viewing is desirable over exceptions. Therefore, a validate(args) method, returning and empty String or set of error messages, is preferred as the vehicle to respond to the caller.
+  * *Result* A Map containing merged values, the parsed values plus default, is identified as the result object for the parse process. Three steps are apparent:
     # *Define.* Define the parameters, name, default value, regular-expression(s), message, required flag.
     # *Validate.* Call String validate(args) function until an empty String is obtained.
     # *Parse.* Map parse(args) e.g obtain a Map containing all parameter names and associated parsed/default values.
