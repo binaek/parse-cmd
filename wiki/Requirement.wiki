@@ -13,7 +13,7 @@ A quick search on Google has several entries; the top results include the follow
   * [http://code.google.com/p/cli-parser/ cli-parser] This entry shows as the only result when searching for 'cli java' in Google Code.
   * [http://jewelcli.sourceforge.net/ JewelCli] JewelCli uses an annotated interface definition to automatically parse and present command line arguments.
   * [http://commons.apache.org/cli/ Apache Commons] The Apache Commons CLI library provides an API for processing command line interfaces. 
-  * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog describes well the state of command-line software for java and lists 13-parser-products.
+  * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog describes well the state of command-line software for java and lists 13-parser-products; its heading summarizes well the current situation: "Why does parsing arguments in Java SUCK so much?"
 
 Reviewing these and other entries, it was time to try another parser. The requirements are as follows:
   # *Definition.* It should allow a simple definition of each parameter entry including the following attributes:
