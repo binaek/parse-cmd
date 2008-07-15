@@ -10,7 +10,8 @@ A quick search on Google has several entries; the top results include the follow
   * [http://journals.ecs.soton.ac.uk/java/tutorial/java/cmdLineArgs/parsing.html parseCmdLine] Java tutorial available at a UK Java site.
   * [http://www.martiansoftware.com/jsap/ JSAP] Java Simple Argument Parser.
   * [http://jopt-simple.sourceforge.net/ JOpt Simple] JOpt Simple is a Java library for parsing command line options, such as those you might pass to an invocation of javac. 
-  * [http://code.google.com/p/cli-parser/ cli-parser] This entry shows as the only result when searching for 'cli java' in Google Code.
+  * [http://code.google.com/p/cli-parser/ cli-parser] Annotations based Solution hosted on Google Code.
+  * [http://code.google.com/p/jacli/ jacli] Another annotations based solution hosted on Google Code.
   * [http://jewelcli.sourceforge.net/ JewelCli] JewelCli uses an annotated interface definition to automatically parse and present command line arguments.
   * [http://commons.apache.org/cli/ Apache Commons] The Apache Commons CLI library provides an API for processing command line interfaces. 
   * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog describes well the state of command-line software for java and lists 13-parser-products; its heading summarizes well the current situation: "Why does parsing arguments in Java SUCK so much?"
