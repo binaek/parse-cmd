@@ -11,8 +11,9 @@ A quick search on Google has several entries; the top results include the follow
   * [http://www.martiansoftware.com/jsap/ JSAP] Java Simple Argument Parser.
   * [http://jopt-simple.sourceforge.net/ JOpt Simple] JOpt Simple is a Java library for parsing command line options, such as those you might pass to an invocation of javac. 
   * [http://code.google.com/p/cli-parser/ cli-parser] This entry shows as the only result when searching for 'cli java' in Google Code.
+  * [http://jewelcli.sourceforge.net/ JewelCli] JewelCli uses an annotated interface definition to automatically parse and present command line arguments.
   * [http://commons.apache.org/cli/ Apache Commons] The Apache Commons CLI library provides an API for processing command line interfaces. 
-  * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog entry describes well the state of command-line software for java and list 13-products found when started a search much as I did.
+  * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog describes well the state of command-line software for java and list 13-parser-products.
 
 Reviewing these and other entries, it was time to give a try to yet another parser. The requirements listed are as follows:
   # *Definition.* The tool should allow a simple definition of each parameter entry and includes the following attributes:
@@ -23,4 +24,9 @@ Reviewing these and other entries, it was time to give a try to yet another pars
     * *Required flag.* Ability to indicate that a parameter is required; default is optional.
   # *Parsing.* A validate process followed by a parse process producing a Map containing the resultant merged values for use by the caller. 
 
-The overall property, possibly at the expense of function, is to keep the solution simple. 
+The overall property, possibly at the expense of function, is to keep the solution simple.  Other properties include the following:
+  * *Avoid use of Exceptions* A simple String response, empty if all is fine and containing any error messages. Typically but not always, the usage is for a interactive use by an end-user. Hence, a String suitable for viewing is desirable over exceptions. Therefore, a validate(args) method, returning and empty String or error message is selected as the vehicle to respond to the caller.
+  * *Result* A Map containing merged values, the parsed values plus defaults values, is identified as the result object for the parse process. Three steps are apparent:
+    # *Define.* Define the parameters, name, default value, regular-expression(s), message, required flag.
+    # *Validate.* Call String validate(args) function until an empty String is obtained.
+    # *Parse.* Map parse(args) e.g obtain a Map containing all parameter names and associated parsed/default values.
