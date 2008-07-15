@@ -15,7 +15,7 @@ A quick search on Google has several entries; the top results include the follow
   * [http://commons.apache.org/cli/ Apache Commons] The Apache Commons CLI library provides an API for processing command line interfaces. 
   * [http://javathink.blogspot.com/2008/04/why-does-parsing-arguments-in-java-suck.html a blog entry re subject] This blog describes well the state of command-line software for java and lists 13-parser-products.
 
-Reviewing these and other entries, it was time to give a try to yet another parser. The requirements listed are as follows:
+Reviewing these and other entries, it was time to try another parser. The requirements listed are as follows:
   # *Definition.* The tool should allow a simple definition of each parameter entry and includes the following attributes:
     * *Name.* A primary name and alias to identify an entry.
     * *Value.* Default value. This value allows also to infer validation rule should one be unavailable. 
