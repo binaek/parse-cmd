@@ -1,8 +1,8 @@
-#summary usage example
+#summary usage refernce
 
 = Usage =
 
-Description of typical use of the Parse.Cmd.
+Description of typical use of Parse.Cmd.
 
 Here is an excerpt from the included source:
 
