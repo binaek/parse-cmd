@@ -1,4 +1,4 @@
-#summary usage refernce
+#summary usage reference
 
 = Usage =
 
@@ -30,13 +30,15 @@ Here is an excerpt from the included source:
     }
 }}}
 
+Run-time output:
+
 {{{
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1
           
                 enter required parms: -loop -delay -if
                 usage: -loop n  -delay nnn -if fileName [ -tt nn  -of abc ]
           
-        The message indicats that 3-parameters are required, -loop, -delay and -if
+        The message indicates that 3-parameters are required, -loop, -delay and -if
         
           
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 33  -if xyz.txt
