@@ -33,7 +33,7 @@ The overall property, possibly at the expense of function, is to keep the soluti
     # *Parse.* Map parse(args) e.g obtain a Map containing all parameter names and associated parsed/default values.
 
 Usage:
-
+{{{
 <pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code>public static void main(String[] args) {
         
         ParseCmd cmd = new ParseCmd.Builder()           
@@ -58,3 +58,4 @@ Usage:
         else System.out.println(err);                        
     }
 </code></pre>
+}}}
