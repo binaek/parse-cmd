@@ -30,20 +30,13 @@ Here is an excerpt from the included source:
     }
 }}}
 
-{{{
-        parse(args) returns a Map, R above, to be used by the caller to query 
-        arguments that have been validated and merged with default values in 
-        Parms Map
+parse(args) returns a Map, R above, to be used by the caller to query arguments that have been validated and merged with default values in Parms Map
 
-        This Map allows the caller to proceed and no longer need the API.
-        parse(args) should be called once validate(args) returns an 
-        empty String. 
+This Map allows the caller to proceed and no longer need the API. parse(args) should be called once validate(args) returns an empty String. 
            
-        The Map is valid should response to validate(args) result in an empty
-        String; if not, the return String shows the error to the caller as
-        shown below.
+The Map is valid should response to validate(args) result in an empty String; if not, the return String shows the error to the caller as shown below.
          
-          
+{{{
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1
           
                 enter required parms: -loop -delay -if
@@ -71,9 +64,7 @@ Here is an excerpt from the included source:
               -if       afile.txt
               -tt       0
               -of       readme.txt
-
-
-          
-          
-       
 }}}
+
+
+  
