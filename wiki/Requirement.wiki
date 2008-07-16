@@ -31,3 +31,30 @@ The overall property, possibly at the expense of function, is to keep the soluti
     # *Define.* Define the parameters, name, default value, regular-expression(s), message, required flag. 
     # *Validate.* Method, String validate(args), used repeatedly until an empty String is obtained signaling a correctly parsed command sequence.
     # *Parse.* Map parse(args) e.g obtain a Map containing all parameter names and associated parsed/default values.
+
+Usage:
+
+<pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code>public static void main(String[] args) {
+        
+        ParseCmd cmd = new ParseCmd.Builder()           
+                  .help(usage)                          
+                  .parm(&quot;-loop&quot;,  &quot;10&quot; ).req(&quot;1&quot;)       
+                  .parm(&quot;-delay&quot;, &quot;100&quot;).req(&quot;1&quot;)       
+                                        .rex(&quot;^[0-9]{3}$&quot;) 
+                                        .msg(&quot;must enter 3-digits.&quot;) 
+                  .parm(&quot;-if&quot;,    &quot;./java.txt&quot;).req(&quot;1&quot;)
+                  .parm(&quot;-tt&quot;,    &quot;0&quot;)                  
+                  .parm(&quot;-of&quot;,    &quot;readme.txt&quot;)
+                  .parm(&quot;-verbose&quot;)
+                  .build();  
+       
+        System.out.println(cmd.displayParms());
+        String err = cmd.validate(args);
+        Map&lt;String,String&gt; R;  
+        if( err.isEmpty()) {
+            R = cmd.parse(args);
+            System.out.println(cmd.displayMap(R));
+        }
+        else System.out.println(err);                        
+    }
+</code></pre>
