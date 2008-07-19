@@ -13,10 +13,10 @@ Here is an excerpt from the included source:
                   .parm("-delay", "100").req("1")       
                                         .rex("^[0-9]{3}$") 
                                         .msg("must enter 3-digits.") 
-                  .parm("-if",    "./java.txt").req("1")
+                  .parm("-ifile", "java.txt").req("1")
                   .parm("-tt",    "0")                  
-                  .parm("-of",    "readme.txt")
-                  .parm("-verbose")
+                  .parm("-ofile", "readme.txt")
+                  .parm("-verbose","0").rex("^[01]{1}$")
                   .build();  
        
         System.out.println(cmd.displayParms());
@@ -36,19 +36,19 @@ Run-time output:
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1
           
                 enter required parms: -loop -delay -if
-                usage: -loop n  -delay nnn -if fileName [ -tt nn  -of abc ]
+                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]
           
-        The message indicates that 3-parameters are required, -loop, -delay and -if
+        The message indicates that 3-parameters are required, -loop, -delay and -ifile
         
           
-        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 33  -if xyz.txt
+        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 33  -ifile xyz.txt
           
                 -delay value of  '33' is invalid;
                              must enter 3-digits.
-                usage: -loop n  -delay nnn -if fileName [ -tt nn  -of abc ]
+                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]
           
          
-        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 555  -if afile.txt
+        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 555  -ifile afile.txt
          
         String err = cmd.validate(args);    returns an empty string e.g. ok
         Map<String,String> R = cmd.parse(args); returns the Map of merged values and the
@@ -57,9 +57,9 @@ Run-time output:
           
               -loop     1
               -delay    555
-              -if       afile.txt
+              -ifile    afile.txt
               -tt       0
-              -of       readme.txt
+              -ofile    readme.txt
 }}}
 
 
