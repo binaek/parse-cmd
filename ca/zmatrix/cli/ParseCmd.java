@@ -35,6 +35,7 @@ public class ParseCmd {
     private static final String pRex     = "rex";
     private static final String pReq     = "req";
     private static final String pMsg     = "msg";
+    private static final String pMon     = "mon";
     private static final String nRegEx   = "^([+-]{0,1})([0-9.]{1,})$";
     private static final String sRegEx   =
                                   "^[^0-9]{1}([a-zA-Z0-9\\/\\_:\\.~]{1,})$";
@@ -64,16 +65,26 @@ public class ParseCmd {
             help  = "";
         }
 
-        private Builder parm(String name, String value) {// entry & defaults
+        public Builder parm(String name, String value, String monadic) {
             String ire = value.matches(nRegEx) ? nRegEx : sRegEx;//default regEx
             entryMap   = new LinkedHashMap<String,String>();// new Map for entry
             entryMap.put(pName,name);                   // parm name
             entryMap.put(pValue,value);                 // default value
+            entryMap.put(pMon,monadic);                 // monadic flag
             entryMap.put(pRex,ire);                     // default regEx
             entryMap.put(pReq,"0");                     // default not required
             entryMap.put(pMsg,"");                      // message if error
             Parms.put(name,entryMap);                   // add it to Parms Map
             return this;
+        }
+
+        public Builder parm(String name, String value) {// standar name-value
+            return parm(name,value,"0");                // monadic set to "0"
+        }
+
+        public Builder parm(String name) {              // monadic parm
+            parm(name,"1","1");                         // set value to "1"
+            return this;                                // and flag  to "1"
         }
 
         /**
@@ -105,7 +116,19 @@ public class ParseCmd {
         public Builder req(String req) {                // required argument
             entryMap.put(pReq,req.matches("^[01]{1}$") ?// ensure "1" or "0"
                                              req : "0");// note: not boolean
-            return this;                                // to keep it simple
+            return this;                                // is used
+        }
+
+        /**
+         *
+         * @param req stores "0" or "1" String to flag whether it is required
+         *            or optional; default is "0", optional
+         * @return    reference to this, Builder, so that chainning can be used
+         */
+        public Builder mon(String req) {                // required argument
+            entryMap.put(pMon,req.matches("^[01]{1}$") ?// ensure "1" or "0"
+                                             req : "0");// note: not boolean
+            return this;                                // is used
         }
 
         /**
@@ -146,6 +169,15 @@ public class ParseCmd {
      * @param parmName defined parm-name as entered in Parms Map by Builder
      * @return         default value for parmName
      */
+    public boolean isParm(String parmName) {            // is parm defined
+        return Parms.containsKey(parmName);             // return
+    }
+
+    /**
+     *
+     * @param parmName defined parm-name as entered in Parms Map by Builder
+     * @return         default value for parmName
+     */
     public String getValue(String parmName) {           // get value for parm
         return getVars(parmName,pValue);
     }
@@ -164,8 +196,9 @@ public class ParseCmd {
      * @param parmName  defined parm-name as enterd in Parms Map by Builder
      * @return          required flag, String "0" or "1" for parmName
      */
-    public String getReq(String parmName) {             // get required
-        return getVars(parmName,pReq);                  // "0" or "1"
+    public boolean isReq(String parmName) {             // get required
+        String r = getVars(parmName,pReq);              // "0" or "1"
+        return r.equals("1") ? true : false;            // return
     }
 
     /**
@@ -179,6 +212,16 @@ public class ParseCmd {
 
     /**
      *
+     * @param parmName  defined parm-name as enterd in Parms Map by Builder
+     * @return String value for error/help message for defined entry in Parms
+     */
+    public boolean isMonadic(String parmName) {         // get emsg for parm
+        String m = getVars(parmName,pMon);              // m <- monadic value
+        return  m.equals("1") ? true : false;           // return
+    }
+
+    /**
+     *
      * @return size of Parms Map indicating number of defined parms
      */
     public int size() {                                 // number of parms
@@ -186,26 +229,21 @@ public class ParseCmd {
     }
 
     /**
-     * Parses the args[] array and merges its values with the default values
-     * as recoded in the Parms Map.
+     * Parses the args array and merges its values with defaults as
+     *              stored in the Parms Map.
      *
-     * @param args   Array of input values
-     * @return       Map merging args[] and default values in Parms Map
+     * @param args  Array of input values
+     * @return      Map merging args[] and default values in Parms Map
      */
-    public Map<String,String> parse(String[] args) {   // merge args & defaults
-        Map<String,String> R = new LinkedHashMap<String,String>();
-        String k,v;
-        for(int i=0;i<args.length;i +=2) {
-            k = args[i];
-            v = (i+1)<args.length ? args[i+1] : "";
-            if(this.Parms.containsKey(k)) R.put(k, v);
+
+    private List<String> filterMonadics(String[] args) {// force value for mon's
+        List<String> Y = new ArrayList<String>();       // Y <- return List
+        for(int i=0;i < args.length;i++) {              // iterate over args
+            if(!isMonadic(args[i])) {Y.add(args[i]);continue;}  // add it
+            Y.add(args[i]);                             // add monadic argument
+            Y.add("1");                                 // set its value to "1"
         }
-        for(Iterator p = this.Parms.keySet().iterator();p.hasNext();) {
-            k = (String) p.next();
-            v = getValue(k);
-            if( !R.containsKey(k)) R.put(k, v);
-        }
-        return R;                                       // R parsed + defaults
+        return Y;                                       // return List of args
     }
 
     /**
@@ -221,22 +259,21 @@ public class ParseCmd {
      *         a merged Map using args[] and default settings in Parms
      */
     public String validate(String[] args) {             // validate args
-        int np = args.length < 2 ? 1 : args.length % 2;
-        if(np > 0) return "\n" + oddParms + "\n\n" + getHelp();
-        String required = validateRequired(args);       // required args
+        List<String> A = filterMonadics(args);          // detect monadics
+        String required = validateRequired(A);          // required args
         if(!required.isEmpty()) {                       // return if notEmpty
             return "\nenter required parms: " + required + "\n\n" + getHelp();
         }                                               // include getHelp()
-        StringBuffer sb = new StringBuffer();           // checl each arg
+        StringBuffer sb = new StringBuffer();           // check each arg
         String k,v,re;
-        for(int i=0;i < args.length-1;i +=2 ) {         // iterate over args
-            k = args[i];                                // k <- arg
-            v = args[i+1];                              // v <- value
-            if(getValue(k).isEmpty()){sb.append("\n" + k + " invalid "); break; }
+        for(int i=0;i < A.size()-1;i +=2 ) {            // iterate over args
+            k = A.get(i);                               // k <- arg
+            v = A.get(i+1);                             // v <- value
+            if(!isParm(k)){sb.append("\n" + k + " invalid "); break; }
             re = getRex(k);                             // get regEx
             if(!v.matches(re)) {                        // if no match add to sb
                 sb.append( "\n" + k + " value of  '" + v + "' is invalid;\n");
-                sb.append( "\t" + getMsg(k));          // append arg emsg
+                sb.append( "\t" + getMsg(k));           // append arg emsg
                 break;
             }
         }
@@ -244,23 +281,39 @@ public class ParseCmd {
         return sb.toString();                           // ok: if emty String
     }
 
+    public Map<String,String> parse(String[] args) {    // merge args & defaults
+        Map<String,String> R = new LinkedHashMap<String,String>();
+        List<String> A = filterMonadics(args);          // detect and fill mons
+        String k,v;
+        for(int i=0;i<A.size()-1;i +=2) {
+            k = A.get(i);
+            v = (i+1) < A.size() ? A.get(i+1) : "";
+            if(this.Parms.containsKey(k)) R.put(k, v);
+        }
+        for(Iterator p = this.Parms.keySet().iterator();p.hasNext();) {
+            k = (String) p.next();
+            v = getValue(k);
+            if( !R.containsKey(k)) R.put(k, v);
+        }
+        return R;                                       // R parsed + defaults
+    }
+
     private List<String> findRequired() {               // List <- required args
         String k,req;
         List<String> R = new ArrayList<String>();
         for(Iterator p = Parms.keySet().iterator(); p.hasNext();) { // iterate
             k = (String) p.next();                      // over Parms.ketSet()
-            req = getReq(k);                            // get req var
-            if(req.equals("1")) R.add(k);               // add it to List if "1"
+            if(isReq(k)) R.add(k);                      // add it if required
         }
         return R;                                       // List of req'd args
     }
 
-    private String validateRequired(String[] args) {    // validate that all
+    private String validateRequired(List<String> X) {   // validate that all
         StringBuffer sb = new StringBuffer();           // required args
         List<String> R  = findRequired();               // are supplied
         int found = 0;
         for(String r : R) {
-            for(String arg : args) if(r.equals(arg)) { found++; break; }
+            for(String arg : X) if(r.equals(arg)) { found++; break; }
         }
         for(int i=0;i<R.size() && R.size() != found;i++) {  // where all req'd
             sb.append(R.get(i) + " ");                  // args found; if not
@@ -275,7 +328,7 @@ public class ParseCmd {
         E = this.Parms.get(parmName);                           //      regex
         if(!E.containsKey(varName)) return r;                   //      req
         return E.get(varName);                                  //      emsg
-    }
+    }                                                           //      monadic
 
     private static String fill(String sep,int n){   // private util for repeated
         StringBuffer sb = new StringBuffer();       // characters n using
@@ -339,9 +392,9 @@ public class ParseCmd {
      *
      * Three steps are required to use the ParseCmd
      *
-     *      1. Define       new ParseCmd.Builder(.help("usage .").parm()...
+     *      1. Define       new ParseCmd.Builder().help("usage .").parm()...
      *      2. Validate     String err = cmd.validate(args);
-     *      3. Parse        if(err.isEmpty() R = cmd.parse(args);
+     *      3. Parse        if(err.isEmpty()) R = cmd.parse(args);
      *
      * @param args input args from command line
      */
@@ -356,6 +409,7 @@ public class ParseCmd {
                   .parm("-if",    "./java.txt").req("1")
                   .parm("-tt",    "0")
                   .parm("-of",    "readme.txt")
+                  .parm("-verbose")
                   .build();
 
         System.out.println(cmd.displayParms());
