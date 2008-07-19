@@ -41,7 +41,7 @@ public class ParseCmd {
                                   "^[^0-9]{1}([a-zA-Z0-9\\/\\_:\\.~]{1,})$";
     private static final String oddParms = "enter '-parmName  value' pairs";
     private static final String usage    =
-              "usage: -loop n  -delay nnn -if fileName [ -tt nn  -of abc ]";
+              "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]";
 
     /**
      *
@@ -211,11 +211,14 @@ public class ParseCmd {
     }
 
     /**
+     * Monadic term us used in predicate calculus to designate a form of logic
+     * based on unary operators
      *
      * @param parmName  defined parm-name as enterd in Parms Map by Builder
-     * @return String value for error/help message for defined entry in Parms
+     * @return          String value for error/help message for defined entry
+     *                  in Parms
      */
-    public boolean isMonadic(String parmName) {         // get emsg for parm
+    public boolean isMonadic(String parmName) {         // get monad for parm
         String m = getVars(parmName,pMon);              // m <- monadic value
         return  m.equals("1") ? true : false;           // return
     }
@@ -236,7 +239,7 @@ public class ParseCmd {
      * @return      Map merging args[] and default values in Parms Map
      */
 
-    private List<String> filterMonadics(String[] args) {// force value for mon's
+    private List<String> filterMonadics(String[] args) {// name-value for monads
         List<String> Y = new ArrayList<String>();       // Y <- return List
         for(int i=0;i < args.length;i++) {              // iterate over args
             if(!isMonadic(args[i])) {Y.add(args[i]);continue;}  // add it
@@ -406,10 +409,10 @@ public class ParseCmd {
                   .parm("-delay", "100").req("1")
                                         .rex("^[0-9]{3}$")
                                         .msg("must enter 3-digits.")
-                  .parm("-if",    "./java.txt").req("1")
+                  .parm("-ifile", "java.txt").req("1")
                   .parm("-tt",    "0")
-                  .parm("-of",    "readme.txt")
-                  .parm("-verbose")
+                  .parm("-ofile", "readme.txt")
+                  .parm("-verbose","0").rex("^[01]{1}$")
                   .build();
 
         System.out.println(cmd.displayParms());
