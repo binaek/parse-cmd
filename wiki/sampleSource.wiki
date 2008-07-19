@@ -35,7 +35,7 @@ Run-time output:
 {{{
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1
           
-                enter required parms: -loop -delay -if
+                enter required parms: -loop -delay -ifile
                 usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]
           
         The message indicates that 3-parameters are required, -loop, -delay and -ifile
