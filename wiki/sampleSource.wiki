@@ -8,16 +8,16 @@ Here is an excerpt from the included source:
     public static void main(String[] args) {
         
         ParseCmd cmd = new ParseCmd.Builder()           
-                  .help(usage)                          
-                  .parm("-loop",  "10" ).req("1")       
-                  .parm("-delay", "100").req("1")       
-                                        .rex("^[0-9]{3}$") 
-                                        .msg("must enter 3-digits.") 
-                  .parm("-ifile", "java.txt").req("1")
-                  .parm("-tt",    "0")                  
-                  .parm("-ofile", "readme.txt")
-                  .parm("-verbose","0").rex("^[01]{1}$")
-                  .build();  
+                      .help(usage)                          
+                      .parm("-loop",  "10" ).req("1")       
+                      .parm("-delay", "100").req("1")       
+                                            .rex("^[0-9]{3}$") 
+                                            .msg("must enter 3-digits.") 
+                      .parm("-ifile", "java.txt").req("1")
+                      .parm("-tt",    "0")                  
+                      .parm("-ofile", "readme.txt")
+                      .parm("-verbose","0").rex("^[01]{1}$")
+                      .build();  
        
         System.out.println(cmd.displayParms());
         String err = cmd.validate(args);
