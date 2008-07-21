@@ -15,8 +15,8 @@ Here is an excerpt from the included source:
                                             .rex("^[0-9]{3}$") 
                                             .msg("must enter 3-digits.") 
                       .parm("-ifile", "java.txt").req("1")
-                      .parm("-tt",    "0")                  
                       .parm("-ofile", "readme.txt")
+                      .parm("-tt",    "0")                  
                       .parm("-verbose","0").rex("^[01]{1}$")
                       .build();  
        
