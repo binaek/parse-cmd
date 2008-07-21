@@ -6,7 +6,8 @@ Here is an excerpt from the included source:
 
 {{{
     public static void main(String[] args) {
-        
+
+        String usage = "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]";
         ParseCmd cmd = new ParseCmd.Builder()           
                       .help(usage)                          
                       .parm("-loop",  "10" ).req("1")       
