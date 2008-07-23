@@ -37,7 +37,7 @@ Run-time output:
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1
           
                 enter required parms: -loop -delay -ifile
-                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]
+                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]
           
         The message indicates that 3-parameters are required, -loop, -delay and -ifile
         
@@ -46,7 +46,7 @@ Run-time output:
           
                 -delay value of  '33' is invalid;
                              must enter 3-digits.
-                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]
+                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]
           
          
         java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 555  -ifile afile.txt
