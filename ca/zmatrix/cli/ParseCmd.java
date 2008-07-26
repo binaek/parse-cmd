@@ -38,11 +38,7 @@ public class ParseCmd {
     private static final String pMon     = "mon";
     private static final String nRegEx   = "^([+-]{0,1})([0-9.]{1,})$";
     private static final String sRegEx   =
-                                  "^[^0-9]{1}([a-zA-Z0-9\\/\\_:\\.~]{1,})$";
-    private static final String oddParms = "enter '-parmName  value' pairs";
-    private static final String usage    =
-              "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -of abc ]";
-
+                                     "^[^0-9]{1}([a-zA-Z0-9\\/\\_:\\.~]{1,})$";
     /**
      *
      */
@@ -78,7 +74,7 @@ public class ParseCmd {
             return this;
         }
 
-        public Builder parm(String name, String value) {// standar name-value
+        public Builder parm(String name, String value) {// standard name-value
             return parm(name,value,"0");                // monadic set to "0"
         }
 
@@ -115,8 +111,17 @@ public class ParseCmd {
          */
         public Builder req(String req) {                // required argument
             entryMap.put(pReq,req.matches("^[01]{1}$") ?// ensure "1" or "0"
-                                             req : "0");// note: not boolean
-            return this;                                // is used
+                                             req : "0");// note: boolean
+            return this;                                // is not used
+        }
+
+        /**
+         *
+         * @param none  sets required switch by calling req("1") method
+         * @return      reference to this, Builder; enable statement chainning
+         */
+        public Builder req() {                          // required without
+            return req("1");                            // String parm
         }
 
         /**
@@ -127,8 +132,8 @@ public class ParseCmd {
          */
         public Builder mon(String req) {                // required argument
             entryMap.put(pMon,req.matches("^[01]{1}$") ?// ensure "1" or "0"
-                                             req : "0");// note: not boolean
-            return this;                                // is used
+                                             req : "0");// note: boolean
+            return this;                                // is not used
         }
 
         /**
@@ -232,19 +237,20 @@ public class ParseCmd {
     }
 
     /**
-     * Parses the args array and merges its values with defaults as
-     *              stored in the Parms Map.
+     * Parses the args array looking for monads, arguments without value
+     *              such as "-verbose" and if found inserts, forces,
+     *              a value of "1" and returns the transformed args as a List
      *
      * @param args  Array of input values
-     * @return      Map merging args[] and default values in Parms Map
+     * @return      List of expanded name-value pair if monads are detected
      */
 
     private List<String> filterMonadics(String[] args) {// name-value for monads
         List<String> Y = new ArrayList<String>();       // Y <- return List
-        for(int i=0;i < args.length;i++) {              // iterate over args
-            if(!isMonadic(args[i])) {Y.add(args[i]);continue;}  // add it
-            Y.add(args[i]);                             // add monadic argument
-            Y.add("1");                                 // set its value to "1"
+        for(String arg : args) {                        // iterate over args
+            if(!isMonadic(arg)) {Y.add(arg);continue;}  // not monad: add it
+            Y.add(arg);                                 // add monadic argument
+            Y.add("1");                                 // insert a value to "1"
         }
         return Y;                                       // return List of args
     }
@@ -302,7 +308,7 @@ public class ParseCmd {
     }
 
     private List<String> findRequired() {               // List <- required args
-        String k,req;
+        String k;
         List<String> R = new ArrayList<String>();
         for(Iterator p = Parms.keySet().iterator(); p.hasNext();) { // iterate
             k = (String) p.next();                      // over Parms.ketSet()
@@ -403,17 +409,18 @@ public class ParseCmd {
      */
     public static void main(String[] args) {
 
+        String usage = "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]";
         ParseCmd cmd = new ParseCmd.Builder()
-                  .help(usage)
-                  .parm("-loop",  "10" ).req("1")
-                  .parm("-delay", "100").req("1")
-                                        .rex("^[0-9]{3}$")
-                                        .msg("must enter 3-digits.")
-                  .parm("-ifile", "java.txt").req("1")
-                  .parm("-tt",    "0")
-                  .parm("-ofile", "readme.txt")
-                  .parm("-verbose","0").rex("^[01]{1}$")
-                  .build();
+                      .help(usage)
+                      .parm("-loop",  "10" ).req()
+                      .parm("-delay", "100").req()
+                                            .rex("^[0-9]{3}$")
+                                            .msg("must enter 3-digits.")
+                      .parm("-ifile", "java.txt").req()
+                      .parm("-tt",    "0")
+                      .parm("-ofile", "readme.txt")
+                      .parm("-verbose","0").rex("^[01]{1}$")
+                      .build();
 
         System.out.println(cmd.displayParms());
         String err = cmd.validate(args);
