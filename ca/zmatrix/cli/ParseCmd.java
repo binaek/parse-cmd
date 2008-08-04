@@ -61,6 +61,13 @@ public class ParseCmd {
             help  = "";
         }
 
+        /**
+         *
+         * @param name
+         * @param value
+         * @param monadic
+         * @return
+         */
         public Builder parm(String name, String value, String monadic) {
             String ire = value.matches(nRegEx) ? nRegEx : sRegEx;//default regEx
             entryMap   = new LinkedHashMap<String,String>();// new Map for entry
@@ -74,10 +81,22 @@ public class ParseCmd {
             return this;
         }
 
+        /**
+         * Defines a parameter
+         * @param name      parameter name
+         * @param value     parameter default value
+         * @return          reference to Builder; allows statement chaining
+         */
         public Builder parm(String name, String value) {// standard name-value
             return parm(name,value,"0");                // monadic set to "0"
         }
 
+        /**
+         * defines a parameter without a default value; a monadic parameter
+         * @param name      parameter name. Internally it is defined as
+         *                  parm(name, "1")
+         * @return          reference to Builder; allows statement chaining
+         */
         public Builder parm(String name) {              // monadic parm
             parm(name,"1","1");                         // set value to "1"
             return this;                                // and flag  to "1"
@@ -111,13 +130,12 @@ public class ParseCmd {
          */
         public Builder req(String req) {                // required argument
             entryMap.put(pReq,req.matches("^[01]{1}$") ?// ensure "1" or "0"
-                                             req : "0");// note: boolean
+                                             req : "1");// note: boolean
             return this;                                // is not used
         }
 
         /**
          *
-         * @param none  sets required switch by calling req("1") method
          * @return      reference to this, Builder; enable statement chainning
          */
         public Builder req() {                          // required without
@@ -126,24 +144,12 @@ public class ParseCmd {
 
         /**
          *
-         * @param req stores "0" or "1" String to flag whether it is required
-         *            or optional; default is "0", optional
-         * @return    reference to this, Builder, so that chainning can be used
-         */
-        public Builder mon(String req) {                // required argument
-            entryMap.put(pMon,req.matches("^[01]{1}$") ?// ensure "1" or "0"
-                                             req : "0");// note: boolean
-            return this;                                // is not used
-        }
-
-        /**
-         *
          * @param desc stores error/help information to be displayed should
          *             regex fail to match
          * @return     reference to this, Builder, so that chainning can be used
          */
-        public Builder msg(String desc) {              // define error message
-            entryMap.put(pMsg,desc);                   // should parm fail
+        public Builder msg(String desc) {               // define error message
+            entryMap.put(pMsg,desc);                    // should parm fail
             return this;                                // rex test
         }
 
@@ -270,7 +276,7 @@ public class ParseCmd {
     public String validate(String[] args) {             // validate args
         List<String> A = filterMonadics(args);          // detect monadics
         String required = validateRequired(A);          // required args
-        if(!required.isEmpty()) {                       // return if notEmpty
+        if(required.length()>0) {                       // return if notEmpty
             return "\nenter required parms: " + required + "\n\n" + getHelp();
         }                                               // include getHelp()
         StringBuffer sb = new StringBuffer();           // check each arg
@@ -290,6 +296,11 @@ public class ParseCmd {
         return sb.toString();                           // ok: if emty String
     }
 
+    /**
+     *
+     * @param args
+     * @return
+     */
     public Map<String,String> parse(String[] args) {    // merge args & defaults
         Map<String,String> R = new LinkedHashMap<String,String>();
         List<String> A = filterMonadics(args);          // detect and fill mons
@@ -412,20 +423,20 @@ public class ParseCmd {
         String usage = "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]";
         ParseCmd cmd = new ParseCmd.Builder()
                       .help(usage)
-                      .parm("-loop",  "10" ).req()
-                      .parm("-delay", "100").req()
-                                            .rex("^[0-9]{3}$")
-                                            .msg("must enter 3-digits.")
-                      .parm("-ifile", "java.txt").req()
-                      .parm("-tt",    "0")
-                      .parm("-ofile", "readme.txt")
-                      .parm("-verbose","0").rex("^[01]{1}$")
+                      .parm("-loop",    "10" ).req()
+                      .parm("-delay",   "100").req()
+                                              .rex("^[0-9]{3}$")
+                                              .msg("must enter 3-digits.")
+                      .parm("-ifile",   "java.txt").req()
+                      .parm("-tt",      "0")
+                      .parm("-ofile",   "readme.txt")
+                      .parm("-verbose", "0").rex("^[01]{1}$")
                       .build();
 
         System.out.println(cmd.displayParms());
         String err = cmd.validate(args);
         Map<String,String> R;
-        if( err.isEmpty()) {
+        if( err.length()==0) {
             R = cmd.parse(args);
             System.out.println(cmd.displayMap(R));
         }
