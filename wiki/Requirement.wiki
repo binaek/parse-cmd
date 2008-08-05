@@ -35,27 +35,27 @@ The overall property, possibly at the expense of function, is to keep the soluti
 Usage:
 {{{
     public static void main(String[] args) {
-        
+
         String usage = "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]";
-        ParseCmd cmd = new ParseCmd.Builder()           
-                      .help(usage)                          
-                      .parm("-loop",  "10" ).req()       
-                      .parm("-delay", "100").req()       
-                                            .rex("^[0-9]{3}$") 
-                                            .msg("must enter 3-digits.") 
-                      .parm("-ifile", "java.txt").req()
-                      .parm("-tt",    "0")                  
-                      .parm("-ofile", "readme.txt")
-                      .parm("-verbose","0").rex("^[01]{1}$")
-                      .build();  
-       
+        ParseCmd cmd = new ParseCmd.Builder()
+                      .help(usage)
+                      .parm("-loop",    "10" ).req()
+                      .parm("-delay",   "100").req()
+                                              .rex("^[0-9]{3}$")
+                                              .msg("must enter 3-digits.")
+                      .parm("-ifile",   "java.txt").req()
+                      .parm("-tt",      "0")
+                      .parm("-ofile",   "readme.txt")
+                      .parm("-verbose", "0").rex("^[01]{1}$")
+                      .build();
+
         System.out.println(cmd.displayParms());
         String err = cmd.validate(args);
-        Map<String,String> R;  
-        if( err.isEmpty()) {
+        Map<String,String> R;
+        if( err.length()==0) {
             R = cmd.parse(args);
             System.out.println(cmd.displayMap(R));
         }
-        else System.out.println(err);                        
+        else System.out.println(err);
     }
 }}}
