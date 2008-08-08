@@ -17,6 +17,7 @@
 package ca.zmatrix.cli;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -296,6 +297,11 @@ public class ParseCmd {
         return sb.toString();                           // ok: if emty String
     }
 
+    public boolean isValid(String[] args) {
+        String err =  this.validate(args);
+        return err == null ? false : err.length() == 0;
+    }
+
     /**
      *
      * @param args
@@ -433,13 +439,14 @@ public class ParseCmd {
                       .parm("-verbose", "0").rex("^[01]{1}$")
                       .build();
 
-        System.out.println(cmd.displayParms());
-        String err = cmd.validate(args);
-        Map<String,String> R;
-        if( err.length()==0) {
+        Map<String,String> R = new HashMap<String,String>();
+        String parseError    = cmd.validate(args);
+        if( cmd.isValid(args) ) {
             R = cmd.parse(args);
             System.out.println(cmd.displayMap(R));
         }
-        else System.out.println(err);
+        else { System.out.println(parseError); System.exit(1); }
     }
+    // R contains default or input values for defined parms and used as in:
+    // long loopLimit = Long.parseLong( R.get("-loop"));
 }
