@@ -28,6 +28,9 @@ Here is an excerpt from the included source:
         }
         else { System.out.println(parseError); System.exit(1); }                    
     }
+    // R contains default or input values for defined parms and used as in:
+    // long loopLimit = Long.parseLong( R.get("-loop"));
+}
 }}}
 
 Run-time output:
