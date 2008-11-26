@@ -5,6 +5,8 @@
 Here is an excerpt from the included source:
 
 {{{
+    import ca.zmatrix.cli.ParseCmd;
+
     public static void main(String[] args) {
         
         String usage = "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]";
