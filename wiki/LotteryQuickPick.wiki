@@ -1,4 +1,4 @@
-#summary Sample usage program.
+#summary sample usage program
 
 = lottery quick-pick number generator =
 
