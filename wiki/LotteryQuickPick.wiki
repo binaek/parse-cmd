@@ -1,6 +1,6 @@
 #summary Sample usage program.
 
-= Random lottery quick-pick number generator =
+= lottery quick-pick number generator =
 
 {{{
 
