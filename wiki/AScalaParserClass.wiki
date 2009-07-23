@@ -1,0 +1,140 @@
+#summary ParseParms.scala is a Scala command-line parser class.
+
+= Introduction =
+
+This page contains an attempt to implement a command-line parser in Scala
+
+{{{
+
+/*
+ * ParseParms.scala
+ *
+ * ParseParms is an attempt to write a command line argument parser in Scala
+ *
+ * As is, the Scala code may well be an example of a non-functional way to
+ * implement a simple command-line parsing class in Scala.
+ *
+ * You are welcome should you wish to contribute and enhance this code using
+ * a more functional and less Java-centic form.
+ *
+ * contact me at: jf.zarama at gmail dot com
+ *
+ */
+
+package ca.zmatrix.utils
+
+class ParseParms(val help: String) {
+
+    private var parms = Map[String,List[String]]()
+    
+    def parm(name: String) = {
+        parms += name -> List("", "^.*$", "0" )
+        this
+    }
+    
+    def parm(name: String, default: String) = {
+        parms += name -> List(default, defRex(default), "0")
+        this
+    }
+
+    def parm(name: String, default: String, rex: String) = {
+        parms += name -> List(default, rex, "0")
+        this
+    }
+
+    def parm(name: String, default: String, rex: String, req: String) = {
+        parms += name -> List(default, rex,     // verify req expression
+                           if( req.matches("^[01]{1}$") ) req else "0")
+        this
+    }
+
+    private def defRex(default: String): String = {
+        if( default.matches("^\\d+$") ) "^\\d+$" else "^.*$"
+    }
+
+    private def genMap(args: List[String] ) = { // return a Map of args
+        var argsMap = Map[String,String]()      // result object
+        if( ( args.length % 2 ) != 0 ) argsMap  // must have pairs: -name value
+        else {                                  // to return a valid Map
+            for( i <- 0.until(args.length,2) ){ 
+                argsMap += args(i) -> args(i+1) // add -name value pair
+            }
+            argsMap                             // return -name value Map
+        }
+    }
+
+    private def testRequired( args: Map[String,String] ) = {
+        val ParmsNotSupplied = new collection.mutable.ListBuffer[String]
+        for( (key,value) <- parms ) {           // iterate trough parms
+            if( value(2).matches("^1$") ) {     // if required
+                if(!args.contains(key)) ParmsNotSupplied += key // not supplied
+            }
+        }                                       // value <- default,rex,req
+        ParmsNotSupplied.toList                 // empty: all required present
+    }
+
+    private def validParms( args: Map[String,String] ) = {
+        val invalidParms = new collection.mutable.ListBuffer[String]
+        for( (key,value) <- args ) {            // iterate through args
+            if( parms.contains(key) ) {         // is it a defined parm
+                val rex = parms(key)(1)         // parms defined rex
+                if( !value.matches(rex) ) invalidParms += key
+            }
+        }
+        invalidParms.toList                     // empty: all parms valid
+    }
+
+    private def mergeParms( args: Map[String,String] ) = {
+        val mergedMap = collection.mutable.Map[String,String]()
+        for( (key,value) <- parms ) {
+            mergedMap.put( key,
+                ( if( args.contains(key) ) args(key) else value(0) ) )
+        }
+        mergedMap                               // return mergedMap
+    }
+
+    private def mkString(l1: List[String],l2: List[String]) = {
+        "\nhelp:   " + help + "\n\trequired parms missing: "  +
+        ( if( !l1.isEmpty ) l1.mkString(" ")  else "" )       +
+        ( if( !l2.isEmpty ) "\n\tinvalid parms:          "    +
+               l2.mkString(" ") + "\n" else "" )
+    }
+
+    def validate( args: List[String] ) = {          // validate args to parms
+        val argsMap   = genMap( args )              // Map of args: -name value
+        val reqList   = testRequired( argsMap )     // List of missing required
+        val validList = validParms( argsMap )       // List of (in)valid args
+        if( reqList.isEmpty && validList.isEmpty ) {// successfull return
+            (true,"",mergeParms( argsMap ))         // true, "", mergedParms
+        } else (false,mkString(reqList,validList),Map[String,String]())
+    }
+}
+
+object Main {
+
+  /**
+   * @param args the command line arguments
+   */
+  def main(args: Array[String]): Unit = {
+    val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345"
+    val PParms = new ParseParms( helpString ) 
+    PParms.parm("-p1", "1")                         // optional
+          .parm("-p2", "22",     "^\\d{2}$")        // optional
+          .parm("-p3", "300",    "^\\d{3}$", "1")   // required
+          .parm("-p4", "1400",   "^\\d{4}$", "1")   // required
+          .parm("-p5", "12345",  "^\\d{5}$", "1")   // required
+          //     ^     ^             ^        ^
+          //     |     |             |        |
+          //     name, default,  regEx,      requiredTag
+
+    val result = PParms.validate( args.toList )
+    if( result._1 ) println(  result._3 ) else println( result._2 )
+    // result is a tupple ([Boolean], [String], [Map])
+    // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
+    //              true:  successful, Map of parsed & merged parms in ._3
+    System.exit(0)
+  }
+
+}
+
+}}}
