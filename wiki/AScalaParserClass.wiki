@@ -115,7 +115,7 @@ object Main {
   /**
    * @param args the command line arguments
    */
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]) = {
     val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345"
     val PParms = new ParseParms( helpString ) 
     PParms.parm("-p1", "1")                         // optional
