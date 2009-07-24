@@ -146,7 +146,7 @@ object Main {
     val result = pp.validate( args.toList )
     println(  if( result._1 ) result._3  else result._2 )
 
-    // result is a tupple ([Boolean], [String], [Map])
+    // result is a tupple  ( Boolean, String, Map )
     // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
     //              true:  successful, Map of parsed & merged parms in ._3
 
