@@ -9,16 +9,35 @@ This page contains an attempt to implement a command-line parser in Scala
 /*
  * ParseParms.scala
  *
- * ParseParms is an attempt to write a command line argument parser in Scala
+ * ParseParms is an implementation of a command-line parameter parser in Scala.
  *
- * As is, the Scala code may well be an example of a non-functional way to
- * implement a simple command-line parsing class in Scala.
+ * It allows you to define:
  *
- * You are welcome should you wish to contribute and enhance this code using
- * a more functional and less Java-centic form.
+ *   A Help String
+ *   Parameter entries each including:
+ *       name
+ *       default value
+ *       regular expression used for validation; defaults are used if not stated
+ *       tag to indicate if it is a required parameter
+ *   A validate method to test passed arguments against defined parameters
  *
- * contact me at: jf.zarama at gmail dot com
+ *   A validate method parses the parameters and returns a Scala tupple object
+ *   of the form (Boolean, String, Map)
  *
+ *   The Boolean indicates success and Map contains merged parm values.
+ *   Failure, false, includes an error message in String; Map is empty
+ *
+ *   The String includes an error message indicating missing required parms
+ *   and/or incorrect parameter values: failed regular expression test
+ *
+ *   The Map object contains the merged parameter values: supplied parms and
+ *   default values for absent non-required parameters.
+ *
+ *   Usage example is included below under Main
+ *
+ * jf.zarama at gmail dot com
+ *
+ * 2009.07.24
  */
 
 package ca.zmatrix.utils
@@ -77,17 +96,16 @@ class ParseParms(val help: String) {
         for{ (key,value) <- args                // iterate through args
             if parms.contains(key)              // if it is a defined parm
             rex = parms(key)(1)                 // parm defined rex
-            if !value.matches(rex)              // if regex doe not match
+            if !value.matches(rex)              // if regex does not match
         } invalidParms += key                   // add invalid arg
         invalidParms.toList                     // empty: all parms valid
     }
 
     private def mergeParms( args: Map[String,String] ) = {
         val mergedMap = collection.mutable.Map[String,String]()
-        for( (key,value) <- parms ) {
-            mergedMap.put( key,
-                ( if( args.contains(key) ) args(key) else value(0) ) )
-        }
+        for{ (key,value) <- parms               // iterate through parms
+            mValue = if( args.contains(key) ) args(key) else value(0)
+        }   mergedMap.put( key,mValue )         // update result Map
         mergedMap                               // return mergedMap
     }
 
@@ -115,8 +133,8 @@ object Main {
    */
   def main(args: Array[String]) = {
     val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345"
-    val PParms = new ParseParms( helpString )
-    PParms.parm("-p1", "1")                         // optional
+    val pp = new ParseParms( helpString )
+    pp.parm("-p1", "1")                             // optional
           .parm("-p2", "22",     "^\\d{2}$")        // optional
           .parm("-p3", "300",    "^\\d{3}$", "1")   // required
           .parm("-p4", "1400",   "^\\d{4}$", "1")   // required
@@ -125,7 +143,7 @@ object Main {
           //     |     |             |        |
           //     name, default,  regEx,      requiredTag
 
-    val result = PParms.validate( args.toList )
+    val result = pp.validate( args.toList )
     if( result._1 ) println(  result._3 ) else println( result._2 )
     // result is a tupple ([Boolean], [String], [Map])
     // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
@@ -134,6 +152,8 @@ object Main {
   }
 
 }
+
+
 
 
 }}}
