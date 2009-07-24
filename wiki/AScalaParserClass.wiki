@@ -104,7 +104,7 @@ class ParseParms(val help: String) {
     private def mergeParms( args: Map[String,String] ) = {
         val mergedMap = collection.mutable.Map[String,String]()
         for{ (key,value) <- parms               // iterate through parms
-            mValue = if( args.contains(key) ) args(key) else value(0)
+            mValue = args getOrElse (key,value(0))  // args(key) or default
         }   mergedMap.put( key,mValue )         // update result Map
         mergedMap                               // return mergedMap
     }
