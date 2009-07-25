@@ -21,7 +21,7 @@ This page contains an attempt to implement a command-line parser in Scala
  *       tag to indicate a required parameter; defaults to not-required
  *   A validate method to test passed arguments against defined parameters
  *
- *   A validate method parses the parameters and returns a Scala tupple object
+ *   A validate method parses the parameters and returns a Scala tuple object
  *   of the form (Boolean, String, Map)
  *
  *   The Boolean indicates success and Map contains merged parm values.
@@ -145,7 +145,7 @@ object Main {
 
     val result = pp.validate( args.toList )
     println(  if( result._1 ) result._3  else result._2 )
-    // result is a tupple (Boolean, String, Map)
+    // result is a tuple (Boolean, String, Map)
     // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
     //              true:  successful, Map of parsed & merged parms in ._3
     System.exit(0)
