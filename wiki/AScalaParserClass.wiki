@@ -44,26 +44,25 @@ package ca.zmatrix.utils
 
 class ParseParms(val help: String) {
 
-    private var parms = Map[String,List[String]]()
+    private var parms = Map[String,(String,String,Boolean)]()
 
     def parm(name: String) = {
-        parms += name -> List("", "^.*$", "0" )
+        parms += name -> ("", "^.*$", false )
         this
     }
 
     def parm(name: String, default: String) = {
-        parms += name -> List(default, defRex(default), "0")
+        parms += name -> (default, defRex(default), false)
         this
     }
 
     def parm(name: String, default: String, rex: String) = {
-        parms += name -> List(default, rex, "0")
+        parms += name -> (default, rex, false)
         this
     }
 
-    def parm(name: String, default: String, rex: String, req: String) = {
-        parms += name -> List(default, rex,     // verify req expression
-                           if( req.matches("^[01]{1}$") ) req else "0")
+    def parm(name: String, default: String, rex: String, req: Boolean) = {
+        parms += name -> (default, rex, req)
         this
     }
 
@@ -85,7 +84,7 @@ class ParseParms(val help: String) {
     private def testRequired( args: Map[String,String] ) = {
         val ParmsNotSupplied = new collection.mutable.ListBuffer[String]
         for{ (key,value) <- parms               // iterate trough parms
-            if value(2).matches("^1$")          // if parm is required
+            if value._3                         // if parm is required
             if !args.contains(key)              // and it is not in args
         } ParmsNotSupplied += key               // add it to List
         ParmsNotSupplied.toList                 // empty: all required present
@@ -95,7 +94,7 @@ class ParseParms(val help: String) {
         val invalidParms = new collection.mutable.ListBuffer[String]
         for{ (key,value) <- args                // iterate through args
             if parms.contains(key)              // if it is a defined parm
-            rex = parms(key)(1)                 // parm defined rex
+            rex = parms(key)._2                 // parm defined rex
             if !value.matches(rex)              // if regex does not match
         } invalidParms += key                   // add invalid arg
         invalidParms.toList                     // empty: all parms valid
@@ -104,7 +103,8 @@ class ParseParms(val help: String) {
     private def mergeParms( args: Map[String,String] ) = {
         val mergedMap = collection.mutable.Map[String,String]()
         for{ (key,value) <- parms               // iterate through parms
-            mValue = args getOrElse (key,value(0))  // args(key) or default
+            //mValue = if( args.contains(key) ) args(key) else value(0)
+            mValue = args getOrElse (key,value._1)  // args(key) or default
         }   mergedMap.put( key,mValue )         // update result Map
         mergedMap                               // return mergedMap
     }
@@ -134,26 +134,23 @@ object Main {
   def main(args: Array[String]) = {
     val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345"
     val pp = new ParseParms( helpString )
-    pp.parm("-p1", "1")                         // optional
-      .parm("-p2", "22",     "^\\d{2}$")        // optional
-      .parm("-p3", "300",    "^\\d{3}$", "1")   // required
-      .parm("-p4", "1400",   "^\\d{4}$", "1")   // required
-      .parm("-p5", "12345",  "^\\d{5}$", "1")   // required
+    pp.parm("-p1", "1")                             // optional
+      .parm("-p2", "22",     "^\\d{2}$")            // optional
+      .parm("-p3", "300",    "^\\d{3}$", true)      // required
+      .parm("-p4", "1400",   "^\\d{4}$", true)      // required
+      .parm("-p5", "12345",  "^\\d{5}$", true)      // required
        //     ^     ^             ^       ^
        //     |     |             |       |
        //     name, default,  regEx,     requiredTag
 
     val result = pp.validate( args.toList )
     println(  if( result._1 ) result._3  else result._2 )
-
-    // result is a tupple  ( Boolean, String, Map )
+    // result is a tupple (Boolean, String, Map)
     // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
     //              true:  successful, Map of parsed & merged parms in ._3
-
     System.exit(0)
   }
 
 }
-
 
 }}}
