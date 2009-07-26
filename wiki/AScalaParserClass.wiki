@@ -166,18 +166,12 @@ object Main {
    * @param args the command line arguments
    */
   def main(args: Array[String]) = {
-    val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345 -p7 abc.txt"
+    val helpString = " -p1 out.txt -p2 22 [ -p3 100 -p4 1200 ] "
     val pp = new ParseParms( helpString )
-    pp.parm("-p1", "1")                                         // optional
-      .parm("-p2", "22",            "^\\d{2}$")                 // optional
-      .parm("-p3", "300",           "^\\d{3}$",     true)       // required
-      .parm("-p4", "1400",          "^\\d{4}$",     true)       // required
-      .parm("-p5", "12345",         "^\\d{5}$",     true)       // required
-      .parm("-p6", "input.txt",                    false)       // optional
-      .parm("-p7", "abc.txt").rex("^.*\\.txt$").req(true)       // required
-       //     ^     ^                 ^            ^
-       //     |     |                 |            |
-       //     name, default,        regEx,        requiredTag
+    pp.parm("-p1", "output.txt").rex("^.*\\.txt$").req(true)    // required
+      .parm("-p2", "22","^\\d{2}$",true)        // alternate form, required
+      .parm("-p3","100").rex("\\d{3}")                          // optional
+      .parm("-p4","1200").rex("\\d{4}").req(false)              // optional
 
     val result = pp.validate( args.toList )
     println(  if( result._1 ) result._3  else result._2 )
@@ -189,5 +183,6 @@ object Main {
   }
 
 }
+
 
 }}}
