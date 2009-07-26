@@ -137,11 +137,12 @@ class ParseParms(val help: String) {
     }
 
     private def mergeParms( args: Map[String,String] ) = {
-        val mergedMap = collection.mutable.Map[String,String]()
+        //val mergedMap = collection.mutable.Map[String,String]()
+        var mergedMap = Map[String,String]()    // name value Map of results
         for{ (key,value) <- parms               // iterate through parms
             //mValue = if( args.contains(key) ) args(key) else value(0)
-            mValue = args getOrElse (key,value._1)  // args(key) or default
-        }   mergedMap.put( key,mValue )         // update result Map
+            mValue = args.getOrElse(key,value._1)  // args(key) or default
+        }   mergedMap +=  key -> mValue         // update result Map
         mergedMap                               // return mergedMap
     }
 
@@ -186,11 +187,12 @@ object Main {
     // result is a tuple (Boolean, String, Map)
     // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
     //              true:  successful, Map of parsed & merged parms in ._3
-    
+
     System.exit(0)
   }
 
 }
+
 
 
 
