@@ -45,25 +45,61 @@ package ca.zmatrix.utils
 class ParseParms(val help: String) {
 
     private var parms = Map[String,(String,String,Boolean)]()
-
+    private var cache: Option[String] = None    // save parm name across calls
+                                                // sed by req and rex methods
     def parm(name: String) = {
-        parms += name -> ("", "^.*$", false )
+        parms += name -> ("", "^.*$", false ) ;cache = Some(name)
         this
     }
 
     def parm(name: String, default: String) = {
-        parms += name -> (default, defRex(default), false)
+        parms += name -> (default, defRex(default), false); cache = Some(name)
         this
     }
 
     def parm(name: String, default: String, rex: String) = {
-        parms += name -> (default, rex, false)
+        parms += name -> (default, rex, false); cache = Some(name)
         this
     }
 
     def parm(name: String, default: String, rex: String, req: Boolean) = {
-        parms += name -> (default, rex, req)
+        parms += name -> (default, rex, req); cache = Some(name)
         this
+    }
+
+    def parm(name: String, default: String, req: Boolean) = {
+        parms += name -> (default, defRex(default), req); cache =  Some(name)
+        this
+    }
+
+    def req(value: Boolean) = {                 // update required flag
+        val k = checkName                       // for current parameter name
+        if( k.length > 0 ) {                    // stored in cache
+            val pvalue = parms(k)               // parmeter tuple value
+            val ntuple = (pvalue._1,pvalue._2,value)    // new tuple
+            parms += cache.get -> ntuple        // update entry in parms
+        }
+        this                                    // enables chained calls
+    }
+
+    def rex(value: String) = {                  // update regular-expression
+        val k = checkName                       // for current name
+        if( k.length > 0 ) {                    // stored in cache
+            val pvalue = parms(k)               // parameter tuple value
+            val ntuple = (pvalue._1,value,pvalue._3)    // new tuple
+            parms += cache.get -> ntuple        // update entry in parms
+        }
+        this                                    // enables chained calls
+    }
+
+    def checkName: String = {
+        var key = ""
+        cache match {// this code avoids exception warning on s.get; exception
+                     // should never happen sice it is a case s:Some[String]
+            case s:Some[String] => try{ key = s.get; key } catch {
+                    case e: NoSuchElementException => key } finally{ key }
+            case _              => key          // req & rex will not update
+        }                                       // entries if cache is None
     }
 
     private def defRex(default: String): String = {
@@ -132,22 +168,25 @@ object Main {
    * @param args the command line arguments
    */
   def main(args: Array[String]) = {
-    val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345"
+    val helpString = "[ -p1 10 -p2 20 ] -p3 300 -p4 1400 -p5 12345 -p7 abc.txt"
     val pp = new ParseParms( helpString )
-    pp.parm("-p1", "1")                             // optional
-      .parm("-p2", "22",     "^\\d{2}$")            // optional
-      .parm("-p3", "300",    "^\\d{3}$", true)      // required
-      .parm("-p4", "1400",   "^\\d{4}$", true)      // required
-      .parm("-p5", "12345",  "^\\d{5}$", true)      // required
-       //     ^     ^             ^       ^
-       //     |     |             |       |
-       //     name, default,  regEx,     requiredTag
+    pp.parm("-p1", "1")                                         // optional
+      .parm("-p2", "22",            "^\\d{2}$")                 // optional
+      .parm("-p3", "300",           "^\\d{3}$",     true)       // required
+      .parm("-p4", "1400",          "^\\d{4}$",     true)       // required
+      .parm("-p5", "12345",         "^\\d{5}$",     true)       // required
+      .parm("-p6", "input.txt",                    false)       // optional
+      .parm("-p7", "abc.txt").rex("^.*\\.txt$").req(true)       // required
+       //     ^     ^                 ^            ^
+       //     |     |                 |            |
+       //     name, default,        regEx,        requiredTag
 
     val result = pp.validate( args.toList )
     println(  if( result._1 ) result._3  else result._2 )
     // result is a tuple (Boolean, String, Map)
     // ._1 Boolean; false: error String contained in ._2, Map in ._3 is empty
     //              true:  successful, Map of parsed & merged parms in ._3
+    
     System.exit(0)
   }
 
