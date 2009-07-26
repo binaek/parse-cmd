@@ -95,11 +95,11 @@ class ParseParms(val help: String) {
     def checkName: String = {
         var key = ""
         cache match {// this code avoids exception warning on s.get; exception
-                     // should never happen sice it is a case s:Some[String]
+            // should never happen sice it is a case s:Some[String]
             case s:Some[String] => try{ key = s.get; key } catch {
                     case e: NoSuchElementException => key } finally{ key }
-            case _              => key          // req & rex will not update
-        }                                       // entries if cache is None
+            case _ => key                       // req & rex will not update
+        }                                       // entries if cache not Some
     }
 
     private def defRex(default: String): String = {
@@ -191,5 +191,7 @@ object Main {
   }
 
 }
+
+
 
 }}}
