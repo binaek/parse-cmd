@@ -87,14 +87,14 @@ class ParseParms(val help: String) {
         if( k.length > 0 ) {                    // stored in cache
             val pvalue = parms(k)               // parameter tuple value
             val ntuple = (pvalue._1,value,pvalue._3)    // new tuple
-            parms += cache.get -> ntuple        // update entry in parms
-        }
+            parms += cache.get -> ntuple        // update tuple for key in parms
+        }                                       // .parm("-p1","1").req(true)
         this                                    // enables chained calls
     }
 
-    def checkName = {
-        cache match {
-            case Some(key) => key               // parm name stored in cache
+    def checkName = {                           // checks name stored in cache
+        cache match {                           // to be a parm-name used for
+            case Some(key) => key               // req and rex methods
             case _ => ""                        // req & rex will not update
         }                                       // entries if cache other than
     }                                           // Some(key)
