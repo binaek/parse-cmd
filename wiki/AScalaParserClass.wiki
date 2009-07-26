@@ -170,8 +170,8 @@ object Main {
     val pp = new ParseParms( helpString )
     pp.parm("-p1", "output.txt").rex("^.*\\.txt$").req(true)    // required
       .parm("-p2", "22","^\\d{2}$",true)        // alternate form, required
-      .parm("-p3","100").rex("\\d{3}")                          // optional
-      .parm("-p4","1200").rex("\\d{4}").req(false)              // optional
+      .parm("-p3","100").rex("^\\d{3}$")                        // optional
+      .parm("-p4","1200").rex("^\\d{4}$").req(false)            // optional
 
     val result = pp.validate( args.toList )
     println(  if( result._1 ) result._3  else result._2 )
