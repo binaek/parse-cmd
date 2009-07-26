@@ -46,7 +46,7 @@ class ParseParms(val help: String) {
 
     private var parms = Map[String,(String,String,Boolean)]()
     private var cache: Option[String] = None    // save parm name across calls
-                                                // sed by req and rex methods
+                                                // used by req and rex methods
     def parm(name: String) = {
         parms += name -> ("", "^.*$", false ) ;cache = Some(name)
         this
