@@ -9,7 +9,7 @@ This page contains an attempt to implement a command-line parser in Scala
 /*
  * ParseParms.scala
  *
- * ParseParms is an implementation of a command-line parameter parser in Scala.
+ * ParseParms is an implementation of a command-line argument parser in Scala.
  *
  * It allows you to define:
  *
@@ -21,17 +21,18 @@ This page contains an attempt to implement a command-line parser in Scala
  *       tag to indicate a required parameter; defaults to not-required
  *   A validate method to test passed arguments against defined parameters
  *
- *   A validate method parses the parameters and returns a Scala tuple object
+ *   A validate method parses the arguments and returns a Scala tuple object
  *   of the form (Boolean, String, Map)
  *
- *   The Boolean indicates success and Map contains merged parm values.
+ *   The Boolean indicates success and Map contains merged values: e.g.
+ *   supplied command-line arguments compared and merged agains defined parms.
+ *   
  *   Failure, false, includes an error message in String; Map is empty
  *
  *   The String includes an error message indicating missing required parms
- *   and/or incorrect parameter values: failed regular expression test
+ *   and/or incorrect values: failed regular expression test
  *
- *   The Map object contains the merged parameter values: supplied parms and
- *   default values for absent non-required parameters.
+ *   The Map object contains the merged arguments and parameter default values
  *
  *   Usage example is included below under Main
  *
