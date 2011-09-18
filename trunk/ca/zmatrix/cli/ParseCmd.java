@@ -39,7 +39,8 @@ public class ParseCmd {
     private static final String pMon     = "mon";
     private static final String nRegEx   = "^([+-]{0,1})([0-9.]{1,})$";
     private static final String sRegEx   =
-                                     "^[^0-9]{1}([a-zA-Z0-9\\/\\_:\\.~]{1,})$";
+                                     //"^[^0-9]{1}([a-zA-Z0-9\\/\\_:\\.~]{1,})$";
+                                       "^[^0-9]{1}([a-z@\\-!A-Z0-9\\/\\_:\\.~]{1,})$";  // change: 2011.09.18
     /**
      *
      */
