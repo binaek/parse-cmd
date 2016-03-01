@@ -1,0 +1,70 @@
+# Usage #
+
+Here is an excerpt from the included source:
+
+```
+    import ca.zmatrix.cli.ParseCmd;
+    import java.util.Map;
+    import java.util.HashMap;
+
+    public static void main(String[] args) {
+        
+        String usage = "usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]";
+        ParseCmd cmd = new ParseCmd.Builder()           
+                      .help(usage)                          
+                      .parm("-loop",    "10" ).req()       
+                      .parm("-delay",   "100").req()       
+                                              .rex("^[0-9]{3}$") 
+                                              .msg("must enter 3-digits.") 
+                      .parm("-ifile",   "java.txt").req()
+                      .parm("-tt",      "0")                  
+                      .parm("-ofile",   "readme.txt")
+                      .parm("-verbose", "0").rex("^[01]{1}$")
+                      .build();  
+       
+        Map<String,String> R = new HashMap<String,String>();
+        String parseError    = cmd.validate(args);
+        if( cmd.isValid(args) ) {
+            R = cmd.parse(args);
+            System.out.println(cmd.displayMap(R));
+        }
+        else { System.out.println(parseError); System.exit(1); }                    
+    }
+    // R contains default or input values for defined parms and used as in:
+    // long loop = Long.parseLong( R.get("-loop"));
+}
+```
+
+Run-time output:
+
+```
+        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1
+          
+                enter required parms: -loop -delay -ifile
+                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]
+          
+        The message indicates that 3-parameters are required, -loop, -delay and -ifile
+        
+          
+        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 33  -ifile xyz.txt
+          
+                -delay value of  '33' is invalid;
+                             must enter 3-digits.
+                usage: -loop n  -delay nnn -ifile fileName [ -tt nn  -ofile abc ]
+          
+         
+        java -cp parsecmd.jar ca.zmatrix.cli.ParseCmd  -loop 1 -delay 555  -ifile afile.txt
+         
+        String err = cmd.validate(args);    returns an empty string e.g. ok
+        Map<String,String> R = cmd.parse(args); returns the Map of merged values and the
+        caller application no longer needs the API; the obtained Map has the validated
+        and merged parameters such as the ones in this example.
+          
+              -loop     1
+              -delay    555
+              -ifile    afile.txt
+              -tt       0
+              -ofile    readme.txt
+```
+
+
